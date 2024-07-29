@@ -1,7 +1,7 @@
 import express from 'express'
 import bodyParser from 'body-parser';
 
-import { getPeople, getPerson, addPerson, checkPerson } from './database.js'
+import { getPeople, getPerson, addPerson, checkPerson, deletePerson } from './database.js'
 
 const app = express();
 const port = 8080;
@@ -37,6 +37,19 @@ app.post("/people", async (req, res) => {
   res.status(201).send(person)
 })
 
+app.delete('/people/:id', async (req, res) => {
+  try {
+    const id = req.params.id;
+    const success = await deletePerson(id);
+    if (success) {
+      res.status(204).send(); // No Content
+    } else {
+      res.status(404).send('Person not found');
+    }
+  } catch (err) {
+    res.status(500).send(err.message);
+  }
+});
 
 // app.post('/hello', (req, res) => {
 //   const formData = req.body;

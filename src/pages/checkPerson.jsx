@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Container, List, ListItem, ListItemText, CircularProgress, Box, TextField, Button } from '@mui/material';
+import { Container, List, ListItem, ListItemText, CircularProgress, Box, TextField, Button, Paper } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
 
-const ItemList = () => {
+const CheckPersonForm = () => {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(false);
   const [searchParams, setSearchParams] = useState({
@@ -40,6 +41,25 @@ const ItemList = () => {
   const handleSearch = () => {
     fetchData();
   };
+
+
+
+  const handleClick = async (id) => {
+    try {
+        const response = await fetch(`/people/${id}`, {
+          method: 'DELETE',
+        });
+        if (response.ok) {
+          // Update the state to remove the deleted item
+          setItems(items.filter(item => item.id !== id));
+        } else {
+          console.error('Failed to delete person:', response.statusText);
+        }
+      } catch (error) {
+        console.error('Error deleting person:', error);
+      }
+  };
+
 
   if (loading) {
     return (
@@ -80,7 +100,11 @@ const ItemList = () => {
       <List>
         {items.length > 0 ? items.map((item, index) => (
           <ListItem key={index}>
-            <ListItemText primary={`${index + 1}. ${item.name}`} secondary={`${item.age} years old, ${item.gender}`} />
+            {/* <ListItemText primary={`${index + 1}. ${item.name}`} secondary={`${item.age} years old, ${item.gender}`} /> */}
+            <ListItem>
+                <ListItemText primary={`${index + 1}. ${item.name}`} secondary={`${item.age} years old, ${item.gender}`} />
+                <CloseIcon onClick={() =>  handleClick(item.id)}/>
+            </ListItem>
           </ListItem>
         )) : (
           <ListItem>
@@ -92,4 +116,4 @@ const ItemList = () => {
   );
 };
 
-export default ItemList;
+export default CheckPersonForm;

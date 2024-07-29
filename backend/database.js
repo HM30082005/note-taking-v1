@@ -42,3 +42,11 @@ export async function checkPerson(name, age, gender) {
     `, [name, age, gender]);
     return rows.length > 0 ? rows : null;
   }
+
+  export async function deletePerson(id) {
+    const [result] = await pool.query(`
+      DELETE FROM people
+      WHERE id = ?
+    `, [id]);
+    return result.affectedRows > 0; // Returns true if a row was deleted
+  }
